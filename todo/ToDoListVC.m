@@ -7,6 +7,7 @@
 //
 
 #import "ToDoListVC.h"
+#import "ToDoItemVO.h"
 
 @interface ToDoListVC ()
 
@@ -30,6 +31,7 @@
     [super viewDidLoad];
     
     self.toDoItems = [[NSMutableArray alloc]init];
+    [self loadInitialData];
 }
 
 - (void)didReceiveMemoryWarning
@@ -38,35 +40,56 @@
     // Dispose of any resources that can be recreated.
 }
 
+- (void)loadInitialData {
+    ToDoItemVO *item1 = [[ToDoItemVO alloc] init];
+    item1.itemName = @"买牛奶";
+    ToDoItemVO *item2 = [[ToDoItemVO alloc] init];
+    item2.itemName = @"买鸡蛋";
+    ToDoItemVO *item3 = [[ToDoItemVO alloc] init];
+    item3.itemName = @"读一本书";
+    [self.toDoItems addObject:item2];
+}
+
 - (IBAction)unwindToList:(UIStoryboardSegue *)segue{
     
 }
-#pragma mark - Table view data source
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
-#warning Potentially incomplete method implementation.
     // Return the number of sections.
-    return 0;
+    return 1;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-#warning Incomplete method implementation.
     // Return the number of rows in the section.
-    return 0;
+    return [self.toDoItems count];
 }
 
-/*
+
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:<#@"reuseIdentifier"#> forIndexPath:indexPath];
+    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"ToDoCell" forIndexPath:indexPath];
     
-    // Configure the cell...
+    ToDoItemVO *vo = [self.toDoItems objectAtIndex:indexPath.row];
+    cell.textLabel.text = vo.itemName;
+    if (vo.completed) {
+        cell.accessoryType = UITableViewCellAccessoryCheckmark;
+    }else{
+        cell.accessoryType = UITableViewCellAccessoryNone;
+    }
     
     return cell;
 }
-*/
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
+    
+    [tableView deselectRowAtIndexPath:indexPath animated:NO];
+    ToDoItemVO *tappedItem = [self.toDoItems objectAtIndex:indexPath.row];
+    tappedItem.completed = !tappedItem.completed;
+    [tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationNone];
+}
+
 
 /*
 // Override to support conditional editing of the table view.
